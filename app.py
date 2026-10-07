@@ -263,6 +263,49 @@ def delete_karvand(data):
 
     print("Karvand with this ID was not found.")
 
+def generate_report(data):
+    total_karvands = len(data["karvands"])
+
+    total_skills = 0
+    total_score = 0
+    cities = []
+    unique_skills = []
+
+    for karvand in data["karvands"]:
+        cities.append(karvand["city"])
+
+        for skill in karvand["skills"]:
+            total_skills += 1
+            total_score += skill["score"]
+
+            if skill["name"] not in unique_skills:
+                unique_skills.append(skill["name"])
+
+    if total_skills > 0:
+        average_skill_score = total_score / total_skills
+    else:
+        average_skill_score = 0
+
+    report = {
+        "total_karvands": total_karvands,
+        "total_skills": total_skills,
+        "average_skill_score": average_skill_score,
+        "cities": cities,
+        "unique_skills": unique_skills
+    }
+
+    print("\n--- General Report ---")
+    print("Total Karvands:", total_karvands)
+    print("Total Skills:", total_skills)
+    print("Average Skill Score:", average_skill_score)
+    print("Cities:", cities)
+    print("Unique Skills:", unique_skills)
+
+    with open("data/report.json", "w", encoding="utf-8") as file:
+        json.dump(report, file, ensure_ascii=False, indent=4)
+
+    print("Report saved successfully.")
+
 def main():
     create_data_file()
     data = load_data()
@@ -275,7 +318,9 @@ def main():
         print("4. Search by Skill")
         print("5. Edit Karvand")
         print("6. Delete Karvand")
-        print("7. Exit")
+        print("7. General Report")
+        print("8. Exit")
+        
 
         choice = input("Enter your choice: ")
 
@@ -296,8 +341,10 @@ def main():
 
         elif choice == "6":
             delete_karvand(data)
+        elif choice =="7":
+            generate_report(data)   
 
-        elif choice == "7":
+        elif choice == "8":
             print("Goodbye!")
             break
 
