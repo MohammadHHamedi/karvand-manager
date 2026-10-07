@@ -244,6 +244,25 @@ def edit_karvand(data):
 
     print("Karvand with this ID was not found.")
 
+def delete_karvand(data):
+    print("\n--- Delete Karvand ---")
+
+    try:
+        karvand_id = int(input("Enter Karvand ID: "))
+    except ValueError:
+        print("Please enter a valid number.")
+        return
+
+    for karvand in data["karvands"]:
+        if karvand["id"] == karvand_id:
+            data["karvands"].remove(karvand)
+            save_data(data)
+
+            print("Karvand deleted successfully.")
+            return
+
+    print("Karvand with this ID was not found.")
+
 def main():
     create_data_file()
     data = load_data()
@@ -255,7 +274,8 @@ def main():
         print("3. Search by ID")
         print("4. Search by Skill")
         print("5. Edit Karvand")
-        print("6. Exit")
+        print("6. Delete Karvand")
+        print("7. Exit")
 
         choice = input("Enter your choice: ")
 
@@ -268,10 +288,16 @@ def main():
         elif choice == "3":
             search_karvand_by_id(data)
 
+        elif choice == "4":
+            search_karvand_by_skill(data)
+
         elif choice == "5":
             edit_karvand(data)
 
         elif choice == "6":
+            delete_karvand(data)
+
+        elif choice == "7":
             print("Goodbye!")
             break
 
