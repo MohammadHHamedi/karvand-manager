@@ -203,6 +203,47 @@ def search_karvand_by_skill(data):
     if not found:
         print("No karvand found with this skill.")
 
+def edit_karvand(data):
+    print("\n--- Edit Karvand ---")
+
+    try:
+        karvand_id = int(input("Enter Karvand ID: "))
+    except ValueError:
+        print("Please enter a valid number.")
+        return
+
+    for karvand in data["karvands"]:
+        if karvand["id"] == karvand_id:
+            print("\nLeave input empty to keep the current value.")
+
+            email = input(f"Email [{karvand['email']}]: ")
+            city = input(f"City [{karvand['city']}]: ")
+            degree = input(
+                f"Degree [{karvand['education']['degree']}]: "
+            )
+            field = input(
+                f"Field [{karvand['education']['field']}]: "
+            )
+
+            if email:
+                karvand["email"] = email
+
+            if city:
+                karvand["city"] = city
+
+            if degree:
+                karvand["education"]["degree"] = degree
+
+            if field:
+                karvand["education"]["field"] = field
+
+            save_data(data)
+
+            print("Karvand updated successfully.")
+            return
+
+    print("Karvand with this ID was not found.")
+
 def main():
     create_data_file()
     data = load_data()
@@ -213,7 +254,8 @@ def main():
         print("2. Show All Karvands")
         print("3. Search by ID")
         print("4. Search by Skill")
-        print("5. Exit")
+        print("5. Edit Karvand")
+        print("6. Exit")
 
         choice = input("Enter your choice: ")
 
@@ -226,10 +268,10 @@ def main():
         elif choice == "3":
             search_karvand_by_id(data)
 
-        elif choice == "4":
-            search_karvand_by_skill(data)
-
         elif choice == "5":
+            edit_karvand(data)
+
+        elif choice == "6":
             print("Goodbye!")
             break
 
