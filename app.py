@@ -165,6 +165,44 @@ def search_karvand_by_id(data):
 
     print("Karvand with this ID was not found.")
 
+def search_karvand_by_skill(data):
+    print("\n--- Search Karvand by Skill ---")
+
+    skill_name = input("Enter skill name: ").strip().lower()
+
+    found = False
+
+    for karvand in data["karvands"]:
+        for skill in karvand["skills"]:
+            if skill["name"].lower() == skill_name:
+                print("\n--------------------")
+                print("ID:", karvand["id"])
+                print("Name:", karvand["name"])
+                print("Email:", karvand["email"])
+                print("City:", karvand["city"])
+
+                print(
+                    "Education:",
+                    karvand["education"]["degree"],
+                    "-",
+                    karvand["education"]["field"]
+                )
+
+                print("Skill:")
+                print(
+                    "-",
+                    skill["name"],
+                    "| Level:",
+                    skill["level"],
+                    "| Score:",
+                    skill["score"]
+                )
+
+                found = True
+
+    if not found:
+        print("No karvand found with this skill.")
+
 def main():
     create_data_file()
     data = load_data()
@@ -174,7 +212,8 @@ def main():
         print("1. Add Karvand")
         print("2. Show All Karvands")
         print("3. Search by ID")
-        print("4. Exit")
+        print("4. Search by Skill")
+        print("5. Exit")
 
         choice = input("Enter your choice: ")
 
@@ -183,15 +222,20 @@ def main():
 
         elif choice == "2":
             show_all_karvands(data)
+
         elif choice == "3":
-         search_karvand_by_id(data)
+            search_karvand_by_id(data)
+
         elif choice == "4":
-         print("Goodbye!")
-         break 
+            search_karvand_by_skill(data)
+
+        elif choice == "5":
+            print("Goodbye!")
+            break
 
         else:
             print("Invalid choice.")
 
+
 if __name__ == "__main__":
     main()
-
