@@ -152,4 +152,44 @@ def main():
 
 if __name__ == "__main__":
     main()
+def search_karvand_by_id(data):
+    print("\n--- Search Karvand by ID ---")
+
+    while True:
+        try:
+            karvand_id = int(input("Enter Karvand ID: "))
+            break
+        except ValueError:
+            print("Please enter a valid number.")
+
+    for karvand in data["karvands"]:
+        if karvand["id"] == karvand_id:
+            print("\n--------------------")
+            print("ID:", karvand["id"])
+            print("Name:", karvand["name"])
+            print("Email:", karvand["email"])
+            print("City:", karvand["city"])
+
+            print(
+                "Education:",
+                karvand["education"]["degree"],
+                "-",
+                karvand["education"]["field"]
+            )
+
+            print("Skills:")
+
+            for skill in karvand["skills"]:
+                print(
+                    "-",
+                    skill["name"],
+                    "| Level:",
+                    skill["level"],
+                    "| Score:",
+                    skill["score"]
+                )
+
+            return
+
+    print("Karvand with this ID was not found.")
 
