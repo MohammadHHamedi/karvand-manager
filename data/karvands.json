@@ -1,0 +1,46 @@
+{
+    "bootcamp": {
+        "name": "Karvand Bootcamp"
+    },
+    "karvands": [
+        {
+            "id": 1,
+            "name": "Ali Ahmadi",
+            "email": "ali@gmail.com",
+            "city": "Tehran",
+            "education": {
+                "degree": "Bachelor",
+                "field": "Industrial Engineering"
+            },
+            "skills": [
+                {
+                    "name": "Python",
+                    "level": "Intermediate",
+                    "score": 80
+                },
+                {
+                    "name": "Git",
+                    "level": "Beginner",
+                    "score": 60
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "name": "Sara Mohammadi",
+            "email": "Sara Mohammadi",
+            "city": "Shiraz",
+            "education": {
+                "degree": "Master",
+                "field": "Computer Science"
+            },
+            "skills": [
+                {
+                    "name": "Python",
+                    "level": "Advanced",
+                    "score": 95
+                }
+            ]
+        }
+    ]
+}
