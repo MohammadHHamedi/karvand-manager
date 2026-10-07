@@ -124,34 +124,6 @@ def show_all_karvands(data):
                 skill["score"]
             )
 
-
-def main():
-    create_data_file()
-    data = load_data()
-
-    while True:
-        print("\n===== Karvand Manager =====")
-        print("1. Add Karvand")
-        print("2. Show All Karvands")
-        print("3. Exit")
-
-        choice = input("Enter your choice: ")
-
-        if choice == "1":
-            add_karvand(data)
-
-        elif choice == "2":
-            show_all_karvands(data)
-
-        elif choice == "3":
-            print("Goodbye!")
-            break
-
-        else:
-            print("Invalid choice.")
-
-if __name__ == "__main__":
-    main()
 def search_karvand_by_id(data):
     print("\n--- Search Karvand by ID ---")
 
@@ -192,4 +164,34 @@ def search_karvand_by_id(data):
             return
 
     print("Karvand with this ID was not found.")
+
+def main():
+    create_data_file()
+    data = load_data()
+
+    while True:
+        print("\n===== Karvand Manager =====")
+        print("1. Add Karvand")
+        print("2. Show All Karvands")
+        print("3. Search by ID")
+        print("4. Exit")
+
+        choice = input("Enter your choice: ")
+
+        if choice == "1":
+            add_karvand(data)
+
+        elif choice == "2":
+            show_all_karvands(data)
+        elif choice == "3":
+         search_karvand_by_id(data)
+        elif choice == "4":
+         print("Goodbye!")
+         break 
+
+        else:
+            print("Invalid choice.")
+
+if __name__ == "__main__":
+    main()
 
