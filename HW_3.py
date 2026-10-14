@@ -1,4 +1,4 @@
-########### Practice 1 ##############
+########### Exercise 1 ##############
 import numpy as np
 
 gym_data = np.array([
@@ -21,7 +21,7 @@ print(gym_data)
 print("\nMember Names:")
 print(member_names)
 
-# Replace missing values in weight, height, and sessions
+# Part 1: Replace missing values in weight, height, and sessions
 
 for column in [1, 2, 3]:
     valid_values = gym_data[:, column][gym_data[:, column] != 0]
@@ -35,7 +35,7 @@ for column in [1, 2, 3]:
 print("Cleaned Gym Data:")
 print(gym_data)
 
-# Create a new array with weight, height, and weekly sessions
+# Part 2: Create a new array with weight, height, and weekly sessions
 
 fitness_data = gym_data[:, 1:4].copy()
 
@@ -45,7 +45,7 @@ print(fitness_data)
 print("\nFitness Data Shape:")
 print(fitness_data.shape)
 
-# Calculate BMI and fitness score
+# Part 3: Calculate BMI and fitness score
 
 weight = fitness_data[:, 0]
 height = fitness_data[:, 1] / 100
@@ -69,7 +69,7 @@ print(bmi)
 print("\nFitness Scores:")
 print(fitness_score) 
 
-# Find the member with the highest fitness score
+# Part 4: Find the member with the highest fitness score
 
 best_index = np.argmax(fitness_score)
 
@@ -79,7 +79,7 @@ print(member_names[best_index])
 print("Highest Fitness Score:")
 print(fitness_score[best_index])
 
-# Find the member whose weekly sessions differ most from the mean
+# Part 5: Find the member whose weekly sessions differ most from the mean
 
 sessions_mean = np.mean(sessions)
 sessions_std = np.std(sessions)
@@ -102,3 +102,88 @@ print(sessions[most_different_index])
 
 print("Absolute Deviation from Mean:")
 print(deviations[most_different_index])
+
+########### Exercise 2 ##############
+# Part 1: Apply Min-Max Scaling to Recipes
+
+recipes = np.array([
+    [15, 350, 2, 5],
+    [45, 600, 7, 10],
+    [10, 200, 0, 3],
+    [30, 450, 5, 7],
+    [60, 800, 8, 12]
+])
+
+recipe_names = ["Salad", "Curry", "Toast", "Pasta", "Stew"]
+
+# Calculate the minimum and maximum values of each feature
+recipes_min = np.min(recipes, axis=0)
+recipes_max = np.max(recipes, axis=0)
+
+# Apply Min-Max Scaling
+recipes_scaled = (recipes - recipes_min) / (recipes_max - recipes_min)
+
+print("\nExercise 2 - Part 1")
+print("Minimum values:", recipes_min)
+print("Maximum values:", recipes_max)
+print("Scaled recipes:")
+print(recipes_scaled)
+
+# Part 2: Scale the preferences of three users
+
+users = np.array([
+    [10, 250, 1, 4],
+    [50, 700, 8, 11],
+    [25, 400, 4, 6]
+])
+
+# Scale users using the minimum and maximum values of recipes
+users_scaled = (users - recipes_min) / (recipes_max - recipes_min)
+
+print("\nExercise 2 - Part 2")
+print("Original user preferences:")
+print(users)
+
+print("Scaled user preferences:")
+print(users_scaled)
+
+# Part 3: Calculate Euclidean distances between users and recipes
+
+# Reshape arrays to enable broadcasting
+users_reshaped = users_scaled[:, np.newaxis, :]
+recipes_reshaped = recipes_scaled[np.newaxis, :, :]
+
+# Calculate Euclidean distances
+distances = np.sqrt(
+    np.sum((users_reshaped - recipes_reshaped) ** 2, axis=2)
+)
+
+print("\nExercise 2 - Part 3")
+print("Distance matrix:")
+print(distances)
+
+print("Distance matrix shape:", distances.shape)
+
+# Part 4: Find the closest recipe for each user
+
+closest_recipe_indices = np.argmin(distances, axis=1)
+
+print("\nExercise 2 - Part 4")
+
+for i in range(len(closest_recipe_indices)):
+    recipe_index = closest_recipe_indices[i]
+    print(f"User {i + 1}: {recipe_names[recipe_index]}")
+
+# Part 5: Rank all recipes from closest to farthest for each user
+
+ranked_recipe_indices = np.argsort(distances, axis=1)
+
+print("\nExercise 2 - Part 5")
+
+for i in range(len(ranked_recipe_indices)):
+    print(f"\nUser {i + 1} recipe ranking:")
+
+    for rank, recipe_index in enumerate(ranked_recipe_indices[i], start=1):
+        distance = distances[i, recipe_index]
+        recipe_name = recipe_names[recipe_index]
+        print(f"{rank}. {recipe_name} - Distance: {distance:.4f}")
