@@ -379,3 +379,66 @@ print("Modified pinned:")
 print(pinned)
 print("Original notes after modifying pinned:")
 print(notes)
+
+########### Exercise 6 ##############
+
+# Part 1: Add new runners
+
+bib_numbers = np.array([101, 102, 103, 104, 105, 106])
+times_5k = np.array([22.3, 25.1, 21.8, 26.4, 23.0, 24.7])
+
+bib_numbers_2 = np.array([107, 108])
+times_5k_2 = np.array([20.5, 27.9])
+
+all_bib_numbers = np.concatenate((bib_numbers, bib_numbers_2))
+all_times = np.concatenate((times_5k, times_5k_2))
+
+print("\nExercise 6 - Part 1")
+print("Bib numbers:", all_bib_numbers)
+print("Running times:", all_times)
+print("Number of runners:", all_bib_numbers.size)
+
+# Part 2: Shuffle runners while keeping bib numbers and times together
+
+np.random.seed(42)
+
+shuffle_indices = np.random.permutation(len(all_bib_numbers))
+
+shuffled_bib_numbers = all_bib_numbers[shuffle_indices]
+shuffled_times = all_times[shuffle_indices]
+
+print("\nExercise 6 - Part 2")
+print("Shuffled bib numbers:", shuffled_bib_numbers)
+print("Shuffled running times:", shuffled_times)
+
+print("Checking bib-time pairs:")
+for bib, time in zip(shuffled_bib_numbers, shuffled_times):
+    print(f"Bib {bib}: {time} minutes")
+
+    # Part 3: Rank runners from fastest to slowest
+
+ranking_indices = np.argsort(shuffled_times)
+
+ranked_bib_numbers = shuffled_bib_numbers[ranking_indices]
+ranked_times = shuffled_times[ranking_indices]
+
+print("\nExercise 6 - Part 3")
+print("Final ranking:")
+
+for rank, (bib, time) in enumerate(
+    zip(ranked_bib_numbers, ranked_times), start=1
+):
+    print(f"Rank {rank}: Bib {bib}, Time {time} minutes")
+
+# Part 4: Find the rank of bib number 104
+
+target_bib = 104
+
+runner_position = np.where(ranked_bib_numbers == target_bib)[0][0]
+runner_rank = runner_position + 1
+runner_time = ranked_times[runner_position]
+
+print("\nExercise 6 - Part 4")
+print("Bib number:", target_bib)
+print("Running time:", runner_time, "minutes")
+print("Final rank:", runner_rank)
