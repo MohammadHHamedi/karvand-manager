@@ -187,3 +187,70 @@ for i in range(len(ranked_recipe_indices)):
         distance = distances[i, recipe_index]
         recipe_name = recipe_names[recipe_index]
         print(f"{rank}. {recipe_name} - Distance: {distance:.4f}")
+
+########### Exercise 3 ##############
+
+# Part 1: Create the weight matrix
+
+scheme_A = np.array([0.5, 0.3, 0.2])
+scheme_B = np.array([0.2, 0.3, 0.5])
+scheme_C = np.array([0.1, 0.2, 0.7])
+
+weight_matrix = np.array([
+    scheme_A,
+    scheme_B,
+    scheme_C
+])
+
+print("\nExercise 3 - Part 1")
+print("Weight matrix:")
+print(weight_matrix)
+print("Weight matrix shape:", weight_matrix.shape)
+
+# Part 2: Calculate final scores using matrix multiplication
+
+scores = np.array([
+    [18, 15, 20],
+    [12, 14, 16],
+    [20, 19, 18],
+    [10, 8, 15]
+])
+
+final_scores = scores @ weight_matrix.T
+
+print("\nExercise 3 - Part 2")
+print("Final scores:")
+print(final_scores)
+print("Final scores shape:", final_scores.shape)
+
+# Part 3: Find the best weighting scheme for each student
+
+best_scheme_indices = np.argmax(final_scores, axis=1)
+scheme_names = ["A", "B", "C"]
+
+print("\nExercise 3 - Part 3")
+print("Best scheme indices:", best_scheme_indices)
+
+for i, scheme_index in enumerate(best_scheme_indices, start=1):
+    print(f"Student {i}: Scheme {scheme_names[scheme_index]}")
+
+# Part 4: Find the scheme with the highest class average
+
+class_averages = np.mean(final_scores, axis=0)
+best_class_scheme_index = np.argmax(class_averages)
+scheme_names = ["A", "B", "C"]
+
+print("\nExercise 3 - Part 4")
+print("Class averages:", class_averages)
+print("Best scheme for the class:", scheme_names[best_class_scheme_index])
+
+# Part 5: Add a fourth weighting scheme
+
+scheme_D = np.array([0.2, 0.4, 0.4])
+
+weight_matrix = np.vstack((weight_matrix, scheme_D))
+
+print("\nExercise 3 - Part 5")
+print("Weight matrix with Scheme D:")
+print(weight_matrix)
+print("Weight matrix shape:", weight_matrix.shape)
