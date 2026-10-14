@@ -1,3 +1,5 @@
+############ MohammadHHamedi####################
+
 ########### Exercise 1 ##############
 import numpy as np
 
@@ -442,3 +444,45 @@ print("\nExercise 6 - Part 4")
 print("Bib number:", target_bib)
 print("Running time:", runner_time, "minutes")
 print("Final rank:", runner_rank)
+
+########### Exercise 7 ##############
+
+# Part 1: Calculate raw neuron outputs
+
+X_messages = np.array([
+    [12, 0, 1],
+    [45, 5, 8],
+    [8, 0, 0],
+    [30, 3, 4]
+])
+
+w = np.array([0.1, 0.8, 0.5])
+b = -2.0
+
+raw_outputs = X_messages @ w + b
+
+print("\nExercise 7 - Part 1")
+print("Raw neuron outputs:")
+print(raw_outputs)
+
+# Part 2: Apply ReLU activation
+
+final_outputs = np.maximum(0, raw_outputs)
+
+print("\nExercise 7 - Part 2")
+print("Raw outputs:", raw_outputs)
+print("Final outputs after ReLU:", final_outputs)
+
+# Part 3: Classify messages using a threshold
+
+threshold = 3.0
+
+print("\nExercise 7 - Part 3")
+
+for i, output in enumerate(final_outputs, start=1):
+    if output >= threshold:
+        label = "Energetic"
+    else:
+        label = "Calm"
+
+    print(f"Message {i}: Score = {output}, Classification = {label}")
