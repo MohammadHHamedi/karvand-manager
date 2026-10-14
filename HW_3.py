@@ -254,3 +254,57 @@ print("\nExercise 3 - Part 5")
 print("Weight matrix with Scheme D:")
 print(weight_matrix)
 print("Weight matrix shape:", weight_matrix.shape)
+
+########### Exercise 4 ##############
+
+# Part 1: Extract and transpose the second day
+
+weather_data = np.random.randn(2, 8, 4) * 5 + 20
+
+day2 = weather_data[1]
+day2_transposed = day2.T
+
+print("\nExercise 4 - Part 1")
+print("Original day 2 shape:", day2.shape)
+print("Transposed day 2 shape:", day2_transposed.shape)
+
+# Part 2: Flatten all weather data
+
+weather_flat = weather_data.reshape(-1)
+
+print("\nExercise 4 - Part 2")
+print("Flattened weather data:")
+print(weather_flat)
+print("Flattened data shape:", weather_flat.shape)
+print("Total number of values:", weather_flat.size)
+
+# Part 3: Compare transpose and flatten
+
+sample_matrix = np.array([
+    [1, 2],
+    [3, 4]
+])
+
+transposed_matrix = sample_matrix.T
+flattened_matrix = sample_matrix.flatten()
+
+print("\nExercise 4 - Part 3")
+print("Original matrix:")
+print(sample_matrix)
+
+print("Transposed matrix:")
+print(transposed_matrix)
+
+print("Flattened matrix:")
+print(flattened_matrix)
+
+# Part 4: Add a third day
+
+day3 = np.random.randn(8, 4)
+day3_expanded = day3[np.newaxis, :, :]
+
+weather_data = np.concatenate((weather_data, day3_expanded), axis=0)
+
+print("\nExercise 4 - Part 4")
+print("Third day shape:", day3.shape)
+print("Weather data shape after adding day 3:", weather_data.shape)
