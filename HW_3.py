@@ -308,3 +308,74 @@ weather_data = np.concatenate((weather_data, day3_expanded), axis=0)
 print("\nExercise 4 - Part 4")
 print("Third day shape:", day3.shape)
 print("Weather data shape after adding day 3:", weather_data.shape)
+
+########### Exercise 5 ##############
+
+# Part 1: Reshape importance into a column
+
+importance = np.array([3, 8, 1, 9, 4, 7])
+
+importance_method1 = importance.reshape(6, 1)
+importance_method2 = importance[:, np.newaxis]
+
+print("\nExercise 5 - Part 1")
+print("Original shape:", importance.shape)
+
+print("Method 1:")
+print(importance_method1)
+print("Shape:", importance_method1.shape)
+
+print("Method 2:")
+print(importance_method2)
+print("Shape:", importance_method2.shape)
+
+# Part 2: Extract a scalar value
+
+model_out = np.array([[[0.9]]])
+
+value_indexing = model_out[0, 0, 0]
+value_item = model_out.item()
+
+print("\nExercise 5 - Part 2")
+print("Using indexing:", value_indexing)
+print("Using item():", value_item)
+print("Array shape:", model_out.shape)
+print("Scalar type:", type(value_item))
+
+# Part 3: Understand views and copies
+
+notes = np.array([5, 10, 15, 20, 25])
+
+pinned = notes[1:3]
+pinned[0] = 999
+
+print("\nExercise 5 - Part 3")
+print("Original notes after modifying pinned:")
+print(notes)
+print("Pinned notes:")
+print(pinned)
+
+# Create a copy to avoid modifying the original array
+
+notes = np.array([5, 10, 15, 20, 25])
+
+pinned_copy = notes[1:3].copy()
+pinned_copy[0] = 999
+
+print("Original notes after modifying pinned_copy:")
+print(notes)
+print("Pinned copy:")
+print(pinned_copy)
+
+# Part 4: Intentionally modify the original array using a view
+
+notes = np.array([5, 10, 15, 20, 25])
+
+pinned = notes[1:4]
+pinned[:] = 0
+
+print("\nExercise 5 - Part 4")
+print("Modified pinned:")
+print(pinned)
+print("Original notes after modifying pinned:")
+print(notes)
