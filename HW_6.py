@@ -715,3 +715,95 @@
 #     print(f"Number of Leaves: {trained_tree.get_n_leaves()}")
 
 
+########### Exercise 4.5: Decision Tree Depth Analysis ###########
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score
+
+# Load the Titanic dataset
+df = pd.read_csv("titanic.csv")
+
+# Select the required columns
+df = df[["Pclass", "Sex", "Age", "Fare", "Survived"]]
+
+# Remove rows with missing target values
+df = df.dropna(subset=["Survived"])
+
+# Fill missing Age values with the mean
+df["Age"] = df["Age"].fillna(df["Age"].mean())
+
+# Convert Sex into numerical columns
+X = pd.get_dummies(
+    df[["Pclass", "Sex", "Age", "Fare"]],
+    columns=["Sex"],
+    drop_first=True,
+    dtype=int
+)
+
+# Separate the target column
+y = df["Survived"]
+
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.30,
+    random_state=42,
+    stratify=y
+)
+
+# Store testing accuracies
+depths = range(1, 9)
+test_accuracies = []
+
+print("Exercise 4.5: Decision Tree Depth Analysis")
+print("-" * 50)
+
+# Train a Decision Tree for each depth
+for depth in depths:
+
+    model = DecisionTreeClassifier(
+        max_depth=depth,
+        random_state=42
+    )
+
+    model.fit(X_train, y_train)
+
+    y_pred = model.predict(X_test)
+    accuracy = accuracy_score(y_test, y_pred)
+
+    test_accuracies.append(accuracy)
+
+    print(f"Max Depth = {depth}: Test Accuracy = {accuracy:.4f}")
+
+# Find the best depth
+best_index = test_accuracies.index(max(test_accuracies))
+best_depth = list(depths)[best_index]
+best_accuracy = test_accuracies[best_index]
+
+print("-" * 50)
+print(f"Best Depth: {best_depth}")
+print(f"Best Test Accuracy: {best_accuracy:.4f}")
+
+# Plot testing accuracy against tree depth
+plt.figure(figsize=(10, 6))
+
+plt.plot(
+    list(depths),
+    test_accuracies,
+    marker="o",
+    linestyle="-"
+)
+
+plt.xlabel("Maximum Tree Depth")
+plt.ylabel("Testing Accuracy")
+plt.title("Decision Tree: Testing Accuracy vs. Maximum Depth")
+
+plt.xticks(list(depths))
+plt.grid(True)
+plt.tight_layout()
+plt.show()
