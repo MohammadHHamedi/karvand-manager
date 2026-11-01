@@ -444,77 +444,210 @@
 #     print("No incorrect prediction was found.")
 
 
-########### Exercise 4.1: Gini and Entropy ###########
+# ########### Exercise 4.1: Gini and Entropy ###########
 
-import numpy as np
-
-
-# Define the class counts
-root = [240, 60]
-left = [180, 10]
-right = [60, 50]
+# import numpy as np
 
 
-# Calculate Gini impurity
-def calculate_gini(counts):
-    probabilities = np.array(counts, dtype=float) / sum(counts)
-    return 1 - np.sum(probabilities ** 2)
+# # Define the class counts
+# root = [240, 60]
+# left = [180, 10]
+# right = [60, 50]
 
 
-# Calculate Entropy
-def calculate_entropy(counts):
-    probabilities = np.array(counts, dtype=float) / sum(counts)
-    probabilities = probabilities[probabilities > 0]
-
-    return -np.sum(probabilities * np.log2(probabilities))
+# # Calculate Gini impurity
+# def calculate_gini(counts):
+#     probabilities = np.array(counts, dtype=float) / sum(counts)
+#     return 1 - np.sum(probabilities ** 2)
 
 
-# Calculate Gini values
-gini_root = calculate_gini(root)
-gini_left = calculate_gini(left)
-gini_right = calculate_gini(right)
+# # Calculate Entropy
+# def calculate_entropy(counts):
+#     probabilities = np.array(counts, dtype=float) / sum(counts)
+#     probabilities = probabilities[probabilities > 0]
 
-# Calculate weighted child Gini
-total_samples = sum(root)
+#     return -np.sum(probabilities * np.log2(probabilities))
 
-weighted_gini = (
-    sum(left) / total_samples * gini_left
-    + sum(right) / total_samples * gini_right
+
+# # Calculate Gini values
+# gini_root = calculate_gini(root)
+# gini_left = calculate_gini(left)
+# gini_right = calculate_gini(right)
+
+# # Calculate weighted child Gini
+# total_samples = sum(root)
+
+# weighted_gini = (
+#     sum(left) / total_samples * gini_left
+#     + sum(right) / total_samples * gini_right
+# )
+
+# # Calculate Gini-based gain
+# gini_gain = gini_root - weighted_gini
+
+
+# # Calculate Entropy values
+# entropy_root = calculate_entropy(root)
+# entropy_left = calculate_entropy(left)
+# entropy_right = calculate_entropy(right)
+
+# # Calculate weighted child Entropy
+# weighted_entropy = (
+#     sum(left) / total_samples * entropy_left
+#     + sum(right) / total_samples * entropy_right
+# )
+
+# # Calculate Information Gain
+# information_gain = entropy_root - weighted_entropy
+
+
+# # Display the results
+# print("Exercise 4.1: Gini and Entropy")
+# print("-" * 45)
+
+# print(f"Root Gini: {gini_root:.4f}")
+# print(f"Left Gini: {gini_left:.4f}")
+# print(f"Right Gini: {gini_right:.4f}")
+# print(f"Weighted Child Gini: {weighted_gini:.4f}")
+# print(f"Gini Gain: {gini_gain:.4f}")
+
+# print()
+
+# print(f"Root Entropy: {entropy_root:.4f}")
+# print(f"Left Entropy: {entropy_left:.4f}")
+# print(f"Right Entropy: {entropy_right:.4f}")
+# print(f"Weighted Child Entropy: {weighted_entropy:.4f}")
+# print(f"Information Gain: {information_gain:.4f}")
+
+
+# Exercise 4.2: XOR Problem
+
+# The XOR problem cannot be correctly solved by Logistic Regression
+# because Logistic Regression uses a linear decision boundary to separate classes.
+
+# In the XOR dataset, the points belonging to the same class are located at opposite corners. 
+# Therefore, no single straight line can separate the two classes correctly.
+
+# However, a Decision Tree can solve the XOR problem because it uses multiple sequential splits based on feature values. 
+# It can first split the data using X1 and then use X2 to determine the final class.
+
+# Conclusion: Logistic Regression is limited to a linear decision boundary, 
+# while Decision Trees can create more flexible decision boundaries using multiple splits.
+
+
+########### Exercise 4.3: Decision Tree vs Logistic Regression ###########
+
+import pandas as pd
+
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score
+
+
+# Load the Titanic dataset
+df = pd.read_csv("titanic.csv")
+
+# Select the required columns
+required_columns = ["Pclass", "Sex", "Age", "Fare", "Survived"]
+df = df[required_columns].copy()
+
+# Remove rows with missing target values
+df = df.dropna(subset=["Survived"])
+
+# Fill missing Age values with the mean
+df["Age"] = df["Age"].fillna(df["Age"].mean())
+
+# Separate features and target
+X = df[["Pclass", "Sex", "Age", "Fare"]]
+y = df["Survived"].astype(int)
+
+# Convert categorical features into numeric values
+X = pd.get_dummies(
+    X,
+    columns=["Sex"],
+    drop_first=True,
+    dtype=int
 )
 
-# Calculate Gini-based gain
-gini_gain = gini_root - weighted_gini
-
-
-# Calculate Entropy values
-entropy_root = calculate_entropy(root)
-entropy_left = calculate_entropy(left)
-entropy_right = calculate_entropy(right)
-
-# Calculate weighted child Entropy
-weighted_entropy = (
-    sum(left) / total_samples * entropy_left
-    + sum(right) / total_samples * entropy_right
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.30,
+    random_state=42,
+    stratify=y
 )
 
-# Calculate Information Gain
-information_gain = entropy_root - weighted_entropy
+# Standardize the features for Logistic Regression
+scaler = StandardScaler()
+
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
 
 
-# Display the results
-print("Exercise 4.1: Gini and Entropy")
-print("-" * 45)
+# Train the Logistic Regression model
+logistic_model = LogisticRegression(max_iter=1000)
 
-print(f"Root Gini: {gini_root:.4f}")
-print(f"Left Gini: {gini_left:.4f}")
-print(f"Right Gini: {gini_right:.4f}")
-print(f"Weighted Child Gini: {weighted_gini:.4f}")
-print(f"Gini Gain: {gini_gain:.4f}")
+logistic_model.fit(X_train_scaled, y_train)
 
-print()
+logistic_predictions = logistic_model.predict(X_test_scaled)
 
-print(f"Root Entropy: {entropy_root:.4f}")
-print(f"Left Entropy: {entropy_left:.4f}")
-print(f"Right Entropy: {entropy_right:.4f}")
-print(f"Weighted Child Entropy: {weighted_entropy:.4f}")
-print(f"Information Gain: {information_gain:.4f}")
+logistic_accuracy = accuracy_score(
+    y_test,
+    logistic_predictions
+)
+
+
+# Train the Decision Tree model
+tree_model = DecisionTreeClassifier(
+    max_depth=4,
+    random_state=42
+)
+
+tree_model.fit(X_train, y_train)
+
+tree_predictions = tree_model.predict(X_test)
+
+tree_accuracy = accuracy_score(
+    y_test,
+    tree_predictions
+)
+
+
+# Display accuracy comparison
+print("Exercise 4.3: Decision Tree vs Logistic Regression")
+print("-" * 55)
+
+print(f"Logistic Regression Accuracy: {logistic_accuracy:.4f}")
+print(f"Decision Tree Accuracy: {tree_accuracy:.4f}")
+
+
+# Display Decision Tree feature importances
+print("\nDecision Tree Feature Importances:")
+for feature, importance in zip(
+    X.columns,
+    tree_model.feature_importances_
+):
+    print(f"{feature}: {importance:.4f}")
+
+
+# Display Logistic Regression coefficients
+print("\nLogistic Regression Coefficients:")
+for feature, coefficient in zip(
+    X.columns,
+    logistic_model.coef_[0]
+):
+    print(f"{feature}: {coefficient:.4f}")
+
+
+# Compare the two models
+print("\nModel Comparison:")
+
+if tree_accuracy > logistic_accuracy:
+    print("Decision Tree performed better.")
+elif logistic_accuracy > tree_accuracy:
+    print("Logistic Regression performed better.")
+else:
+    print("Both models achieved the same accuracy.")
