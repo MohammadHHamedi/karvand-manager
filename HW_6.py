@@ -266,176 +266,255 @@
 
 #     print(f"k = {k:2d} | Test Accuracy: {accuracy:.4f}")
 
-########### Exercise 3: Logistic Regression with Titanic Dataset ###########
+
+
+
+# ########### Exercise 3: Logistic Regression with Titanic Dataset ###########
+
+# import numpy as np
+# import pandas as pd
+
+# from sklearn.model_selection import train_test_split
+# from sklearn.preprocessing import StandardScaler
+# from sklearn.linear_model import LogisticRegression
+# from sklearn.metrics import accuracy_score, confusion_matrix
+
+
+# # Load the Titanic dataset
+# df = pd.read_csv("titanic.csv")
+
+# # Select the required columns
+# required_columns = ["Pclass", "Sex", "Age", "Fare", "Survived"]
+
+# missing_columns = [
+#     column for column in required_columns
+#     if column not in df.columns
+# ]
+
+# if missing_columns:
+#     raise ValueError(
+#         f"Missing required columns: {missing_columns}"
+#     )
+
+# df = df[required_columns].copy()
+
+# # Remove rows with missing target values
+# df = df.dropna(subset=["Survived"])
+
+# # Fill missing Age values with the mean age
+# df["Age"] = df["Age"].fillna(df["Age"].mean())
+
+# # Separate features and target
+# X = df[["Pclass", "Sex", "Age", "Fare"]]
+# y = df["Survived"].astype(int)
+
+# # Convert categorical Sex values into numeric columns
+# X = pd.get_dummies(
+#     X,
+#     columns=["Sex"],
+#     drop_first=True,
+#     dtype=int
+# )
+
+# # Split the dataset into training and testing sets
+# X_train, X_test, y_train, y_test = train_test_split(
+#     X,
+#     y,
+#     test_size=0.30,
+#     random_state=42,
+#     stratify=y
+# )
+
+# # Standardize the features
+# scaler = StandardScaler()
+
+# X_train_scaled = scaler.fit_transform(X_train)
+# X_test_scaled = scaler.transform(X_test)
+
+# # Create and train the Logistic Regression model
+# model = LogisticRegression(max_iter=1000)
+# model.fit(X_train_scaled, y_train)
+
+# # Predict survival on the test set
+# y_pred = model.predict(X_test_scaled)
+
+# # Calculate test accuracy
+# accuracy = accuracy_score(y_test, y_pred)
+
+# # Calculate the confusion matrix
+# cm = confusion_matrix(
+#     y_test,
+#     y_pred,
+#     labels=[0, 1]
+# )
+
+# # Display the main results
+# print("Exercise 3: Logistic Regression")
+# print("-" * 45)
+# print(f"Total samples: {len(df)}")
+# print(f"Training samples: {len(X_train)}")
+# print(f"Testing samples: {len(X_test)}")
+# print(f"Features: {list(X.columns)}")
+# print(f"Test Accuracy: {accuracy:.4f}")
+
+# print("\nConfusion Matrix:")
+# print(cm)
+
+# tn, fp, fn, tp = cm.ravel()
+
+# print("\nConfusion Matrix Interpretation:")
+# print(f"True Negatives: {tn}")
+# print(f"False Positives: {fp}")
+# print(f"False Negatives: {fn}")
+# print(f"True Positives: {tp}")
+
+# # Display incorrectly classified passengers
+# results = X_test.copy()
+# results["Actual"] = y_test
+# results["Predicted"] = y_pred
+
+# errors = results[
+#     results["Actual"] != results["Predicted"]
+# ]
+
+# print("\nMisclassified Passengers:")
+# if errors.empty:
+#     print("No misclassified passengers.")
+# else:
+#     print(errors.to_string())
+
+# # Display model coefficients
+# print("\nModel Coefficients:")
+# for feature, coefficient in zip(X.columns, model.coef_[0]):
+#     print(f"{feature}: {coefficient:.4f}")
+
+# print(f"Intercept: {model.intercept_[0]:.4f}")
+
+# # Calculate cross-entropy loss for one correct prediction
+# # and one incorrect prediction
+# probabilities = model.predict_proba(X_test_scaled)
+# actual_values = y_test.to_numpy()
+
+# correct_positions = np.where(y_pred == actual_values)[0]
+# wrong_positions = np.where(y_pred != actual_values)[0]
+
+
+# def calculate_cross_entropy(position):
+#     actual_class = actual_values[position]
+#     actual_class_probability = probabilities[
+#         position, actual_class
+#     ]
+
+#     actual_class_probability = np.clip(
+#         actual_class_probability,
+#         1e-15,
+#         1 - 1e-15
+#     )
+
+#     return -np.log(actual_class_probability)
+
+
+# print("\nCross-Entropy Loss Examples:")
+
+# if len(correct_positions) > 0:
+#     correct_position = correct_positions[0]
+#     correct_loss = calculate_cross_entropy(correct_position)
+
+#     print(
+#         f"Correct prediction: "
+#         f"Actual={actual_values[correct_position]}, "
+#         f"Predicted={y_pred[correct_position]}, "
+#         f"Loss={correct_loss:.4f}"
+#     )
+# else:
+#     print("No correct prediction was found.")
+
+# if len(wrong_positions) > 0:
+#     wrong_position = wrong_positions[0]
+#     wrong_loss = calculate_cross_entropy(wrong_position)
+
+#     print(
+#         f"Incorrect prediction: "
+
+# f"Actual={actual_values[wrong_position]}, "
+#         f"Predicted={y_pred[wrong_position]}, "
+#         f"Loss={wrong_loss:.4f}"
+#     )
+# else:
+#     print("No incorrect prediction was found.")
+
+
+########### Exercise 4.1: Gini and Entropy ###########
 
 import numpy as np
-import pandas as pd
-
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, confusion_matrix
 
 
-# Load the Titanic dataset
-df = pd.read_csv("titanic.csv")
+# Define the class counts
+root = [240, 60]
+left = [180, 10]
+right = [60, 50]
 
-# Select the required columns
-required_columns = ["Pclass", "Sex", "Age", "Fare", "Survived"]
 
-missing_columns = [
-    column for column in required_columns
-    if column not in df.columns
-]
+# Calculate Gini impurity
+def calculate_gini(counts):
+    probabilities = np.array(counts, dtype=float) / sum(counts)
+    return 1 - np.sum(probabilities ** 2)
 
-if missing_columns:
-    raise ValueError(
-        f"Missing required columns: {missing_columns}"
-    )
 
-df = df[required_columns].copy()
+# Calculate Entropy
+def calculate_entropy(counts):
+    probabilities = np.array(counts, dtype=float) / sum(counts)
+    probabilities = probabilities[probabilities > 0]
 
-# Remove rows with missing target values
-df = df.dropna(subset=["Survived"])
+    return -np.sum(probabilities * np.log2(probabilities))
 
-# Fill missing Age values with the mean age
-df["Age"] = df["Age"].fillna(df["Age"].mean())
 
-# Separate features and target
-X = df[["Pclass", "Sex", "Age", "Fare"]]
-y = df["Survived"].astype(int)
+# Calculate Gini values
+gini_root = calculate_gini(root)
+gini_left = calculate_gini(left)
+gini_right = calculate_gini(right)
 
-# Convert categorical Sex values into numeric columns
-X = pd.get_dummies(
-    X,
-    columns=["Sex"],
-    drop_first=True,
-    dtype=int
+# Calculate weighted child Gini
+total_samples = sum(root)
+
+weighted_gini = (
+    sum(left) / total_samples * gini_left
+    + sum(right) / total_samples * gini_right
 )
 
-# Split the dataset into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(
-    X,
-    y,
-    test_size=0.30,
-    random_state=42,
-    stratify=y
+# Calculate Gini-based gain
+gini_gain = gini_root - weighted_gini
+
+
+# Calculate Entropy values
+entropy_root = calculate_entropy(root)
+entropy_left = calculate_entropy(left)
+entropy_right = calculate_entropy(right)
+
+# Calculate weighted child Entropy
+weighted_entropy = (
+    sum(left) / total_samples * entropy_left
+    + sum(right) / total_samples * entropy_right
 )
 
-# Standardize the features
-scaler = StandardScaler()
+# Calculate Information Gain
+information_gain = entropy_root - weighted_entropy
 
-X_train_scaled = scaler.fit_transform(X_train)
-X_test_scaled = scaler.transform(X_test)
 
-# Create and train the Logistic Regression model
-model = LogisticRegression(max_iter=1000)
-model.fit(X_train_scaled, y_train)
-
-# Predict survival on the test set
-y_pred = model.predict(X_test_scaled)
-
-# Calculate test accuracy
-accuracy = accuracy_score(y_test, y_pred)
-
-# Calculate the confusion matrix
-cm = confusion_matrix(
-    y_test,
-    y_pred,
-    labels=[0, 1]
-)
-
-# Display the main results
-print("Exercise 3: Logistic Regression")
+# Display the results
+print("Exercise 4.1: Gini and Entropy")
 print("-" * 45)
-print(f"Total samples: {len(df)}")
-print(f"Training samples: {len(X_train)}")
-print(f"Testing samples: {len(X_test)}")
-print(f"Features: {list(X.columns)}")
-print(f"Test Accuracy: {accuracy:.4f}")
 
-print("\nConfusion Matrix:")
-print(cm)
+print(f"Root Gini: {gini_root:.4f}")
+print(f"Left Gini: {gini_left:.4f}")
+print(f"Right Gini: {gini_right:.4f}")
+print(f"Weighted Child Gini: {weighted_gini:.4f}")
+print(f"Gini Gain: {gini_gain:.4f}")
 
-tn, fp, fn, tp = cm.ravel()
+print()
 
-print("\nConfusion Matrix Interpretation:")
-print(f"True Negatives: {tn}")
-print(f"False Positives: {fp}")
-print(f"False Negatives: {fn}")
-print(f"True Positives: {tp}")
-
-# Display incorrectly classified passengers
-results = X_test.copy()
-results["Actual"] = y_test
-results["Predicted"] = y_pred
-
-errors = results[
-    results["Actual"] != results["Predicted"]
-]
-
-print("\nMisclassified Passengers:")
-if errors.empty:
-    print("No misclassified passengers.")
-else:
-    print(errors.to_string())
-
-# Display model coefficients
-print("\nModel Coefficients:")
-for feature, coefficient in zip(X.columns, model.coef_[0]):
-    print(f"{feature}: {coefficient:.4f}")
-
-print(f"Intercept: {model.intercept_[0]:.4f}")
-
-# Calculate cross-entropy loss for one correct prediction
-# and one incorrect prediction
-probabilities = model.predict_proba(X_test_scaled)
-actual_values = y_test.to_numpy()
-
-correct_positions = np.where(y_pred == actual_values)[0]
-wrong_positions = np.where(y_pred != actual_values)[0]
-
-
-def calculate_cross_entropy(position):
-    actual_class = actual_values[position]
-    actual_class_probability = probabilities[
-        position, actual_class
-    ]
-
-    actual_class_probability = np.clip(
-        actual_class_probability,
-        1e-15,
-        1 - 1e-15
-    )
-
-    return -np.log(actual_class_probability)
-
-
-print("\nCross-Entropy Loss Examples:")
-
-if len(correct_positions) > 0:
-    correct_position = correct_positions[0]
-    correct_loss = calculate_cross_entropy(correct_position)
-
-    print(
-        f"Correct prediction: "
-        f"Actual={actual_values[correct_position]}, "
-        f"Predicted={y_pred[correct_position]}, "
-        f"Loss={correct_loss:.4f}"
-    )
-else:
-    print("No correct prediction was found.")
-
-if len(wrong_positions) > 0:
-    wrong_position = wrong_positions[0]
-    wrong_loss = calculate_cross_entropy(wrong_position)
-
-    print(
-        f"Incorrect prediction: "
-
-f"Actual={actual_values[wrong_position]}, "
-        f"Predicted={y_pred[wrong_position]}, "
-        f"Loss={wrong_loss:.4f}"
-    )
-else:
-    print("No incorrect prediction was found.")
+print(f"Root Entropy: {entropy_root:.4f}")
+print(f"Left Entropy: {entropy_left:.4f}")
+print(f"Right Entropy: {entropy_right:.4f}")
+print(f"Weighted Child Entropy: {weighted_entropy:.4f}")
+print(f"Information Gain: {information_gain:.4f}")
