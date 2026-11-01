@@ -122,96 +122,144 @@
 
 
 
-########### Exercise 2 Part A: Bayes Rule ###########
+# ########### Exercise 2 Part A: Bayes Rule ###########
 
-import numpy as np
-import matplotlib.pyplot as plt
-from scipy.stats import norm
+# import numpy as np
+# import matplotlib.pyplot as plt
+# from scipy.stats import norm
 
 
-# Define prior probabilities
-p_healthy = 0.92
-p_defective = 0.08
+# # Define prior probabilities
+# p_healthy = 0.92
+# p_defective = 0.08
 
-# Define normal distribution parameters
-healthy_mean = 1000
-healthy_std = 15
+# # Define normal distribution parameters
+# healthy_mean = 1000
+# healthy_std = 15
 
-defective_mean = 940
-defective_std = 25
+# defective_mean = 940
+# defective_std = 25
 
-# Generate weight values for plotting
-weights = np.linspace(850, 1050, 1000)
+# # Generate weight values for plotting
+# weights = np.linspace(850, 1050, 1000)
 
-# Calculate probability density functions
-healthy_density = norm.pdf(
-    weights,
-    loc=healthy_mean,
-    scale=healthy_std
+# # Calculate probability density functions
+# healthy_density = norm.pdf(
+#     weights,
+#     loc=healthy_mean,
+#     scale=healthy_std
+# )
+
+# defective_density = norm.pdf(
+#     weights,
+#     loc=defective_mean,
+#     scale=defective_std
+# )
+
+# # Plot the probability density functions
+# plt.figure(figsize=(10, 6))
+
+# plt.plot(
+#     weights,
+#     healthy_density,
+#     label="Healthy Bags",
+#     linewidth=2
+# )
+
+# plt.plot(
+#     weights,
+#     defective_density,
+#     label="Defective Bags",
+#     linewidth=2
+# )
+
+# plt.xlabel("Bag Weight")
+# plt.ylabel("Probability Density")
+# plt.title("Weight Distributions of Healthy and Defective Bags")
+# plt.legend()
+# plt.grid(True)
+# plt.tight_layout()
+# plt.show()
+
+# # Calculate weighted densities at weight 970
+# observed_weight = 970
+
+# healthy_score = p_healthy * norm.pdf(
+#     observed_weight,
+#     loc=healthy_mean,
+#     scale=healthy_std
+# )
+
+# defective_score = p_defective * norm.pdf(
+#     observed_weight,
+#     loc=defective_mean,
+#     scale=defective_std
+# )
+
+# # Calculate posterior probabilities
+# total_score = healthy_score + defective_score
+
+# p_healthy_given_weight = healthy_score / total_score
+# p_defective_given_weight = defective_score / total_score
+
+# # Display the results
+# print("Exercise 2 Part A: Bayes Rule")
+# print("-" * 40)
+# print(f"Observed weight: {observed_weight}")
+# print(f"Weighted density for Healthy: {healthy_score:.8f}")
+# print(f"Weighted density for Defective: {defective_score:.8f}")
+# print(f"Posterior probability of Healthy: {p_healthy_given_weight:.4%}")
+# print(f"Posterior probability of Defective: {p_defective_given_weight:.4%}")
+
+# if healthy_score > defective_score:
+#     print("Classification: Healthy")
+# else:
+#     print("Classification: Defective")
+
+########### Exercise 2 Part B: KNN Classification ###########
+
+from sklearn.datasets import load_wine
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score
+
+
+# Load the Wine dataset
+X, y = load_wine(return_X_y=True)
+
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.30,
+    random_state=42,
+    stratify=y
 )
 
-defective_density = norm.pdf(
-    weights,
-    loc=defective_mean,
-    scale=defective_std
-)
+# Standardize the features
+scaler = StandardScaler()
 
-# Plot the probability density functions
-plt.figure(figsize=(10, 6))
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
 
-plt.plot(
-    weights,
-    healthy_density,
-    label="Healthy Bags",
-    linewidth=2
-)
+# Evaluate KNN with different values of k
+k_values = [1, 5, 15]
 
-plt.plot(
-    weights,
-    defective_density,
-    label="Defective Bags",
-    linewidth=2
-)
+print("Exercise 2 Part B: KNN Classification")
+print("-" * 45)
+print(f"Training samples: {len(X_train)}")
+print(f"Testing samples: {len(X_test)}")
 
-plt.xlabel("Bag Weight")
-plt.ylabel("Probability Density")
-plt.title("Weight Distributions of Healthy and Defective Bags")
-plt.legend()
-plt.grid(True)
-plt.tight_layout()
-plt.show()
+for k in k_values:
+    # Create and train the KNN model
+    model = KNeighborsClassifier(n_neighbors=k)
+    model.fit(X_train_scaled, y_train)
 
-# Calculate weighted densities at weight 970
-observed_weight = 970
+    # Predict the classes of the test samples
+    y_pred = model.predict(X_test_scaled)
 
-healthy_score = p_healthy * norm.pdf(
-    observed_weight,
-    loc=healthy_mean,
-    scale=healthy_std
-)
+    # Calculate test accuracy
+    accuracy = accuracy_score(y_test, y_pred)
 
-defective_score = p_defective * norm.pdf(
-    observed_weight,
-    loc=defective_mean,
-    scale=defective_std
-)
-
-# Calculate posterior probabilities
-total_score = healthy_score + defective_score
-
-p_healthy_given_weight = healthy_score / total_score
-p_defective_given_weight = defective_score / total_score
-
-# Display the results
-print("Exercise 2 Part A: Bayes Rule")
-print("-" * 40)
-print(f"Observed weight: {observed_weight}")
-print(f"Weighted density for Healthy: {healthy_score:.8f}")
-print(f"Weighted density for Defective: {defective_score:.8f}")
-print(f"Posterior probability of Healthy: {p_healthy_given_weight:.4%}")
-print(f"Posterior probability of Defective: {p_defective_given_weight:.4%}")
-
-if healthy_score > defective_score:
-    print("Classification: Healthy")
-else:
-    print("Classification: Defective")
+    print(f"k = {k:2d} | Test Accuracy: {accuracy:.4f}")
