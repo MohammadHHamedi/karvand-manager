@@ -520,134 +520,198 @@
 # print(f"Information Gain: {information_gain:.4f}")
 
 
-# Exercise 4.2: XOR Problem
-
-# The XOR problem cannot be correctly solved by Logistic Regression
-# because Logistic Regression uses a linear decision boundary to separate classes.
-
-# In the XOR dataset, the points belonging to the same class are located at opposite corners. 
-# Therefore, no single straight line can separate the two classes correctly.
-
-# However, a Decision Tree can solve the XOR problem because it uses multiple sequential splits based on feature values. 
-# It can first split the data using X1 and then use X2 to determine the final class.
-
-# Conclusion: Logistic Regression is limited to a linear decision boundary, 
-# while Decision Trees can create more flexible decision boundaries using multiple splits.
 
 
-########### Exercise 4.3: Decision Tree vs Logistic Regression ###########
 
-import pandas as pd
+# ########### Exercise 4.3: Decision Tree vs Logistic Regression ###########
 
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
-from sklearn.linear_model import LogisticRegression
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.metrics import accuracy_score
+# import pandas as pd
 
-
-# Load the Titanic dataset
-df = pd.read_csv("titanic.csv")
-
-# Select the required columns
-required_columns = ["Pclass", "Sex", "Age", "Fare", "Survived"]
-df = df[required_columns].copy()
-
-# Remove rows with missing target values
-df = df.dropna(subset=["Survived"])
-
-# Fill missing Age values with the mean
-df["Age"] = df["Age"].fillna(df["Age"].mean())
-
-# Separate features and target
-X = df[["Pclass", "Sex", "Age", "Fare"]]
-y = df["Survived"].astype(int)
-
-# Convert categorical features into numeric values
-X = pd.get_dummies(
-    X,
-    columns=["Sex"],
-    drop_first=True,
-    dtype=int
-)
-
-# Split the dataset into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(
-    X,
-    y,
-    test_size=0.30,
-    random_state=42,
-    stratify=y
-)
-
-# Standardize the features for Logistic Regression
-scaler = StandardScaler()
-
-X_train_scaled = scaler.fit_transform(X_train)
-X_test_scaled = scaler.transform(X_test)
+# from sklearn.model_selection import train_test_split
+# from sklearn.preprocessing import StandardScaler
+# from sklearn.linear_model import LogisticRegression
+# from sklearn.tree import DecisionTreeClassifier
+# from sklearn.metrics import accuracy_score
 
 
-# Train the Logistic Regression model
-logistic_model = LogisticRegression(max_iter=1000)
+# # Load the Titanic dataset
+# df = pd.read_csv("titanic.csv")
 
-logistic_model.fit(X_train_scaled, y_train)
+# # Select the required columns
+# required_columns = ["Pclass", "Sex", "Age", "Fare", "Survived"]
+# df = df[required_columns].copy()
 
-logistic_predictions = logistic_model.predict(X_test_scaled)
+# # Remove rows with missing target values
+# df = df.dropna(subset=["Survived"])
 
-logistic_accuracy = accuracy_score(
-    y_test,
-    logistic_predictions
-)
+# # Fill missing Age values with the mean
+# df["Age"] = df["Age"].fillna(df["Age"].mean())
 
+# # Separate features and target
+# X = df[["Pclass", "Sex", "Age", "Fare"]]
+# y = df["Survived"].astype(int)
 
-# Train the Decision Tree model
-tree_model = DecisionTreeClassifier(
-    max_depth=4,
-    random_state=42
-)
+# # Convert categorical features into numeric values
+# X = pd.get_dummies(
+#     X,
+#     columns=["Sex"],
+#     drop_first=True,
+#     dtype=int
+# )
 
-tree_model.fit(X_train, y_train)
+# # Split the dataset into training and testing sets
+# X_train, X_test, y_train, y_test = train_test_split(
+#     X,
+#     y,
+#     test_size=0.30,
+#     random_state=42,
+#     stratify=y
+# )
 
-tree_predictions = tree_model.predict(X_test)
+# # Standardize the features for Logistic Regression
+# scaler = StandardScaler()
 
-tree_accuracy = accuracy_score(
-    y_test,
-    tree_predictions
-)
-
-
-# Display accuracy comparison
-print("Exercise 4.3: Decision Tree vs Logistic Regression")
-print("-" * 55)
-
-print(f"Logistic Regression Accuracy: {logistic_accuracy:.4f}")
-print(f"Decision Tree Accuracy: {tree_accuracy:.4f}")
-
-
-# Display Decision Tree feature importances
-print("\nDecision Tree Feature Importances:")
-for feature, importance in zip(
-    X.columns,
-    tree_model.feature_importances_
-):
-    print(f"{feature}: {importance:.4f}")
+# X_train_scaled = scaler.fit_transform(X_train)
+# X_test_scaled = scaler.transform(X_test)
 
 
-# Display Logistic Regression coefficients
-print("\nLogistic Regression Coefficients:")
-for feature, coefficient in zip(
-    X.columns,
-    logistic_model.coef_[0]
-):
-    print(f"{feature}: {coefficient:.4f}")
+# # Train the Logistic Regression model
+# logistic_model = LogisticRegression(max_iter=1000)
+
+# logistic_model.fit(X_train_scaled, y_train)
+
+# logistic_predictions = logistic_model.predict(X_test_scaled)
+
+# logistic_accuracy = accuracy_score(
+#     y_test,
+#     logistic_predictions
+# )
 
 
-# Compare the two models
-print("\nModel Comparison:")
+# # Train the Decision Tree model
+# tree_model = DecisionTreeClassifier(
+#     max_depth=4,
+#     random_state=42
+# )
 
-if tree_accuracy > logistic_accuracy:
-    print("Decision Tree performed better.")
-elif logistic_accuracy > tree_accuracy:
-    print("Logistic Regression performed better.")
-else:
-    print("Both models achieved the same accuracy.")
+# tree_model.fit(X_train, y_train)
+
+# tree_predictions = tree_model.predict(X_test)
+
+# tree_accuracy = accuracy_score(
+#     y_test,
+#     tree_predictions
+# )
+
+
+# # Display accuracy comparison
+# print("Exercise 4.3: Decision Tree vs Logistic Regression")
+# print("-" * 55)
+
+# print(f"Logistic Regression Accuracy: {logistic_accuracy:.4f}")
+# print(f"Decision Tree Accuracy: {tree_accuracy:.4f}")
+
+
+# # Display Decision Tree feature importances
+# print("\nDecision Tree Feature Importances:")
+# for feature, importance in zip(
+#     X.columns,
+#     tree_model.feature_importances_
+# ):
+#     print(f"{feature}: {importance:.4f}")
+
+
+# # Display Logistic Regression coefficients
+# print("\nLogistic Regression Coefficients:")
+# for feature, coefficient in zip(
+#     X.columns,
+#     logistic_model.coef_[0]
+# ):
+#     print(f"{feature}: {coefficient:.4f}")
+
+
+# # Compare the two models
+# print("\nModel Comparison:")
+
+# if tree_accuracy > logistic_accuracy:
+#     print("Decision Tree performed better.")
+# elif logistic_accuracy > tree_accuracy:
+#     print("Logistic Regression performed better.")
+# else:
+#     print("Both models achieved the same accuracy.")
+
+
+# ########### Exercise 4.4: Decision Tree on Heart Dataset ###########
+
+# import pandas as pd
+
+# from sklearn.impute import SimpleImputer
+# from sklearn.metrics import accuracy_score
+# from sklearn.model_selection import train_test_split
+# from sklearn.pipeline import Pipeline
+# from sklearn.tree import DecisionTreeClassifier
+
+# # Load the dataset
+# df = pd.read_csv("heart.csv")
+
+# # Separate features and target
+# X = df.drop("target", axis=1)
+# y = df["target"]
+
+# # Split the dataset into training and testing sets
+# X_train, X_test, y_train, y_test = train_test_split(
+#     X,
+#     y,
+#     test_size=0.30,
+#     random_state=42,
+#     stratify=y
+# )
+
+# # Define three Decision Tree models
+# models = {
+#     "Default Tree": DecisionTreeClassifier(random_state=42),
+#     "Min Samples Leaf = 20": DecisionTreeClassifier(
+#         min_samples_leaf=20,
+#         random_state=42
+#     ),
+#     "Max Leaf Nodes = 8": DecisionTreeClassifier(
+#         max_leaf_nodes=8,
+#         random_state=42
+#     )
+# }
+
+# print("Exercise 4.4: Decision Tree on Heart Dataset")
+# print("-" * 55)
+# print(f"Total samples: {len(df)}")
+# print(f"Training samples: {len(X_train)}")
+# print(f"Testing samples: {len(X_test)}")
+# print(f"Number of features: {X.shape[1]}")
+# print(f"Missing values: {df.isnull().sum().sum()}")
+
+# # Train and evaluate each model
+# for model_name, tree_model in models.items():
+
+#     pipeline = Pipeline([
+#         ("imputer", SimpleImputer(strategy="median")),
+#         ("tree", tree_model)
+#     ])
+
+#     pipeline.fit(X_train, y_train)
+
+#     train_predictions = pipeline.predict(X_train)
+#     test_predictions = pipeline.predict(X_test)
+
+#     train_accuracy = accuracy_score(y_train, train_predictions)
+#     test_accuracy = accuracy_score(y_test, test_predictions)
+
+#     trained_tree = pipeline.named_steps["tree"]
+
+#     print(f"\n{model_name}")
+#     print("-" * 35)
+#     print(f"Training Accuracy: {train_accuracy:.4f}")
+#     print(f"Testing Accuracy: {test_accuracy:.4f}")
+#     print(f"Accuracy Difference: {train_accuracy - test_accuracy:.4f}")
+#     print(f"Tree Depth: {trained_tree.get_depth()}")
+#     print(f"Number of Leaves: {trained_tree.get_n_leaves()}")
+
+
